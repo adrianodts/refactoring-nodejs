@@ -1,22 +1,48 @@
 function statement (invoice, plays) {
-    let totalAmount = 0;
-    let volumeCredits = 0;
     let result = `Statement for ${invoice.customer}\n`;
-    const format = new Intl.NumberFormat("en-US", {
-        style: "currency", 
-        currency: "USD",
-        minimumFractionDigits: 2
-    }).format;
-    
     for(let perf of invoice.performances) {
-        volumeCredits += volumeCreditsFor(perf);
-        //exibe a linha para esta requisicao
-        result += ` ${playFor(perf).name}: ${format(amountFor(perf)/100)} (${perf.audience} seats)\n`;
-        totalAmount += amountFor(perf);
+        result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
     }
-    result += `Amount owed is ${ format(totalAmount/100) }\n`;
-    result += `You earned ${volumeCredits} credits\n`;
+    result += `Amount owed is ${ usd(totalAmount()) }\n`;
+    result += `You earned ${totalVolumeCredits()} credits\n`;
     return result;
+
+    function totalAmount() {
+        let result = 0;
+        for(let perf of invoice.performances) {
+            result += amountFor(perf);
+        }
+        return result;
+    }
+
+    function totalVolumeCredits() {
+        let result = 0;
+        for(let perf of invoice.performances) {
+            result += volumeCreditsFor(perf);
+        }
+        return result;
+    }
+
+    function usd(aNumber) {
+        return new Intl.NumberFormat("en-US", {
+            style: "currency", 
+            currency: "USD",
+            minimumFractionDigits: 2
+        }).format(aNumber/100);
+    }
+
+    function volumeCreditsFor(aPerformace) {
+        let result = 0;
+        result += Math.max(aPerformace.audience -30, 0);
+        if ("comedy" === playFor(aPerformace).type) result += Math.floor(aPerformace.audience / 5)
+        return result;
+    }
+
+    function playFor(aPerformace) {
+        return plays.find((play) => { 
+            return play.playID === aPerformace.playID
+        });
+    }
 
     function amountFor(aPerformace) {
         let result = 0;
@@ -30,7 +56,7 @@ function statement (invoice, plays) {
             case "comedy":
                 result = 30000;
                 if(aPerformace.audience > 20) {
-                    result += 1000 + 500 * (aPerformace.audience - 20);
+                    result += 10000 + 500 * (aPerformace.audience - 20);
                 }
                 result += 300 * aPerformace.audience;
                 break;
@@ -38,19 +64,6 @@ function statement (invoice, plays) {
                 throw new Error(`unknow type: ${playFor(aPerformace).type}`);
         }
         return result;
-    }
-
-    function playFor(aPerformace) {
-        return plays.find((play) => { 
-            return play.playID === aPerformace.playID
-        });
-    }
-
-    function volumeCreditsFor(aPerformace) {
-        let volumeCredits = 0;
-        volumeCredits += Math.max(aPerformace.audience -30, 0);
-        if ("comedy" === playFor(aPerformace).type) volumeCredits += Math.floor(aPerformace.audience / 5)
-        return volumeCredits;
     }
 }
 module.exports = statement
