@@ -9,24 +9,18 @@ function statement (invoice, plays) {
     }).format;
     
     for(let perf of invoice.performances) {
-        let thisAmount = amountFor(perf, playFor(perf));
-
-        //soma creditos por volume
-        volumeCredits += Math.max(perf.audience -30, 0);
-        //soma um credito extra para cada dez espectadores de comedia
-        if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5)
-
+        volumeCredits += volumeCreditsFor(perf);
         //exibe a linha para esta requisicao
-        result += ` ${playFor(perf).name}: ${format(thisAmount/100)} (${perf.audience} seats)\n`;
-        totalAmount += thisAmount;
+        result += ` ${playFor(perf).name}: ${format(amountFor(perf)/100)} (${perf.audience} seats)\n`;
+        totalAmount += amountFor(perf);
     }
     result += `Amount owed is ${ format(totalAmount/100) }\n`;
     result += `You earned ${volumeCredits} credits\n`;
     return result;
 
-    function amountFor(aPerformace, play) {
+    function amountFor(aPerformace) {
         let result = 0;
-        switch (play.type) {
+        switch (playFor(aPerformace).type) {
             case "tragedy":
                 result = 40000;
                 if(aPerformace.audience > 30) {
@@ -41,7 +35,7 @@ function statement (invoice, plays) {
                 result += 300 * aPerformace.audience;
                 break;
             default:
-                throw new Error(`unknow type: ${play.type}`);
+                throw new Error(`unknow type: ${playFor(aPerformace).type}`);
         }
         return result;
     }
@@ -50,6 +44,13 @@ function statement (invoice, plays) {
         return plays.find((play) => { 
             return play.playID === aPerformace.playID
         });
+    }
+
+    function volumeCreditsFor(aPerformace) {
+        let volumeCredits = 0;
+        volumeCredits += Math.max(aPerformace.audience -30, 0);
+        if ("comedy" === playFor(aPerformace).type) volumeCredits += Math.floor(aPerformace.audience / 5)
+        return volumeCredits;
     }
 }
 module.exports = statement
