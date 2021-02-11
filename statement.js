@@ -10,6 +10,22 @@ function statement (invoice, plays) {
     
     for(let perf of invoice.performances) {
         const play = plays.find((play) => { return play.playID === perf.playID} );
+        let thisAmount = amountFor(perf, play);
+
+        //soma creditos por volume
+        volumeCredits += Math.max(perf.audience -30, 0);
+        //soma um credito extra para cada dez espectadores de comedia
+        if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5)
+
+        //exibe a linha para esta requisicao
+        result += ` ${play.name}: ${format(thisAmount/100)} (${perf.audience} seats)\n`;
+        totalAmount += thisAmount;
+    }
+    result += `Amount owed is ${ format(totalAmount/100) }\n`;
+    result += `You earned ${volumeCredits} credits\n`;
+    return result;
+
+    function amountFor(perf, play) {
         let thisAmount = 0;
         switch (play.type) {
             case "tragedy":
@@ -28,19 +44,7 @@ function statement (invoice, plays) {
             default:
                 throw new Error(`unknow type: ${play.type}`);
         }
-
-        //soma creditos por volume
-        volumeCredits += Math.max(perf.audience -30, 0);
-        //soma um credito extra para cada dez espectadores de comedia
-        if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5)
-
-        //exibe a linha para esta requisicao
-        result += ` ${play.name}: ${format(thisAmount/100)} (${perf.audience} seats)\n`;
-        totalAmount += thisAmount;
+        return thisAmount;
     }
-    result += `Amount owed is ${ format(totalAmount/100) }\n`;
-    result += `You earned ${volumeCredits} credits\n`;
-    return result;
 }
-
 module.exports = statement
