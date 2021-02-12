@@ -21,7 +21,7 @@ const performances = [
 
 const invoice = new Invoices("BigCo", performances)
 
-const result = htmlStatement(invoice, plays)
+const result = statement(invoice, plays)
 console.log(result)
 
  

@@ -3,8 +3,6 @@ import createStatementData from './createStatementData.js'
 export function statement (invoice, plays) {
     return renderPlaintext(createStatementData(invoice, plays));
 }
-
-
 function renderPlaintext (data, plays) {
     let result = `Statement for ${data.customer}\n`;
     for(let perf of data.performances) {
@@ -13,20 +11,10 @@ function renderPlaintext (data, plays) {
     result += `Amount owed is ${ usd(data.totalAmount) }\n`;
     result += `You earned ${data.totalVolumeCredits} credits\n`;
     return result;
-    
-    function usd(aNumber) {
-        return new Intl.NumberFormat("en-US", {
-            style: "currency", 
-            currency: "USD",
-            minimumFractionDigits: 2
-        }).format(aNumber/100);
-    }
 }
-
 export function htmlStatement (invoice, plays) {
     return renderHtml(createStatementData(invoice, plays));
 }
-
 function renderHtml (data, plays) {
     let result = `<h1>Statement for ${data.customer}</h1>\n`;
     result += "<table>\n";
@@ -39,11 +27,11 @@ function renderHtml (data, plays) {
     result += `<p>You earned ${data.totalVolumeCredits} credits</p>\n`;
     return result;
     
-    function usd(aNumber) {
-        return new Intl.NumberFormat("en-US", {
-            style: "currency", 
-            currency: "USD",
-            minimumFractionDigits: 2
-        }).format(aNumber/100);
-    }
+}
+function usd(aNumber) {
+    return new Intl.NumberFormat("en-US", {
+        style: "currency", 
+        currency: "USD",
+        minimumFractionDigits: 2
+    }).format(aNumber/100);
 }
