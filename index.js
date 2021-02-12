@@ -24,6 +24,4 @@ const invoice = new Invoices("BigCo", performances)
 const result = statement(invoice, plays)
 console.log(result)
 
- 
-
 app.listen(3000, ()=> console.log('Express iniciado na porta: 3000'))

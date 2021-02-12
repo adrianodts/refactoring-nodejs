@@ -1,5 +1,6 @@
 export default class PerformanceCalculator {
-    constructor(aPerformance) {
-        this.performance = aPerformance
+    constructor(aPerformance, aPlay) {
+        this.performance = aPerformance;
+        this.play = aPlay;
     }
 }
