@@ -1,5 +1,5 @@
 import express from 'express'
-import statement from './statement.js'
+import { statement, htmlStatement} from './statement.js'
 import Plays from './plays.js'
 import Invoices from './invoices.js'
 import Performances from './performances.js'
@@ -21,7 +21,9 @@ const performances = [
 
 const invoice = new Invoices("BigCo", performances)
 
-const result = statement(invoice, plays)
+const result = htmlStatement(invoice, plays)
 console.log(result)
+
+ 
 
 app.listen(3000, ()=> console.log('Express iniciado na porta: 3000'))
