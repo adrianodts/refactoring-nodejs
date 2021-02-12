@@ -6,7 +6,6 @@ export default class PerformanceCalculator {
     
     get amount() {
         let result = 0;
-        console.log(this.play)
         switch (this.play.type) {
             case "tragedy":
                 result = 40000;
@@ -24,6 +23,13 @@ export default class PerformanceCalculator {
             default:
                 throw new Error(`unknow type: ${this.play.type}`);
         }
+        return result;
+    }
+
+    get volumeCredits() {
+        let result = 0;
+        result += Math.max(this.performance.audience -30, 0);
+        if ("comedy" === this.play.type) result += Math.floor(this.performance.audience / 5)
         return result;
     }
 }
