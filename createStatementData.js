@@ -17,17 +17,6 @@ export default function createStatementData(invoice, plays) {
         return result;
     }
 
-    function createPerformanceCalculator(aPerformance, aPlay) {
-        switch(aPlay.type) {
-            case "tragedy":
-                return new TragedyCalculator(aPerformance, aPlay);
-            case "comedy":
-                return new ComedyCalculator(aPerformance, aPlay);
-            default:
-                throw new Error(`unknow type ${aPlay.type}`);
-        }
-    }
-
     function playFor(aPerformance) {
         return plays.find((play) => { 
             return play.playID === aPerformance.playID
@@ -45,5 +34,16 @@ export default function createStatementData(invoice, plays) {
             result += perf.volumeCredits;
         }
         return result;
+    }
+
+    function createPerformanceCalculator(aPerformance, aPlay) {
+        switch(aPlay.type) {
+            case "tragedy":
+                return new TragedyCalculator(aPerformance, aPlay);
+            case "comedy":
+                return new ComedyCalculator(aPerformance, aPlay);
+            default:
+                throw new Error(`unknow type ${aPlay.type}`);
+        }
     }
 }
