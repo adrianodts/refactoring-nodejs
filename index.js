@@ -1,8 +1,8 @@
-const express = require('express')
-const statement = require('./statement')
-const Plays = require('./plays')
-const Invoices = require('./invoices')
-const Performances = require('./performances')
+import express from 'express'
+import { statement, htmlStatement} from './statement.js'
+import Plays from './plays.js'
+import Invoices from './invoices.js'
+import Performances from './performances.js'
 
 const app = express()
 
