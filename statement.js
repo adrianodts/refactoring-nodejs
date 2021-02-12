@@ -1,46 +1,37 @@
-function statement (invoice, plays) {
-    let totalAmount = 0;
-    let volumeCredits = 0;
-    let result = `Statement for ${invoice.customer}\n`;
-    const format = new Intl.NumberFormat("en-US", {
+import createStatementData from './createStatementData.js'
+
+export function statement (invoice, plays) {
+    return renderPlaintext(createStatementData(invoice, plays));
+}
+function renderPlaintext (data, plays) {
+    let result = `Statement for ${data.customer}\n`;
+    for(let perf of data.performances) {
+        result += ` ${perf.play.name}: ${usd(perf.amount)} (${perf.audience} seats)\n`;
+    }
+    result += `Amount owed is ${ usd(data.totalAmount) }\n`;
+    result += `You earned ${data.totalVolumeCredits} credits\n`;
+    return result;
+}
+export function htmlStatement (invoice, plays) {
+    return renderHtml(createStatementData(invoice, plays));
+}
+function renderHtml (data, plays) {
+    let result = `<h1>Statement for ${data.customer}</h1>\n`;
+    result += "<table>\n";
+    result += "<tr><th>play</th><th>seats</th><th>cost</th></tr>\n";
+    for(let perf of data.performances) {
+        result += `<tr><td>${perf.play.name}</td><td>${perf.audience}</td><td>${usd(perf.amount)}</td></tr>\n`;
+    }
+    result += "<t/able>\n";
+    result += `<p>Amount owed is ${ usd(data.totalAmount) }</p>\n`;
+    result += `<p>You earned ${data.totalVolumeCredits} credits</p>\n`;
+    return result;
+    
+}
+function usd(aNumber) {
+    return new Intl.NumberFormat("en-US", {
         style: "currency", 
         currency: "USD",
         minimumFractionDigits: 2
-    }).format;
-    
-    for(let perf of invoice.performances) {
-        const play = plays.find((play) => { return play.playID === perf.playID} );
-        let thisAmount = 0;
-        switch (play.type) {
-            case "tragedy":
-                thisAmount = 40000;
-                if(perf.audience > 30) {
-                    thisAmount += 1000 * (perf.audience - 30);
-                }
-                break;
-            case "comedy":
-                thisAmount = 30000;
-                if(perf.audience > 20) {
-                    thisAmount += 1000 + 500 * (perf.audience - 20);
-                }
-                thisAmount += 300 * perf.audience;
-                break;
-            default:
-                throw new Error(`unknow type: ${play.type}`);
-        }
-
-        //soma creditos por volume
-        volumeCredits += Math.max(perf.audience -30, 0);
-        //soma um credito extra para cada dez espectadores de comedia
-        if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5)
-
-        //exibe a linha para esta requisicao
-        result += ` ${play.name}: ${format(thisAmount/100)} (${perf.audience} seats)\n`;
-        totalAmount += thisAmount;
-    }
-    result += `Amount owed is ${ format(totalAmount/100) }\n`;
-    result += `You earned ${volumeCredits} credits\n`;
-    return result;
+    }).format(aNumber/100);
 }
-
-module.exports = statement

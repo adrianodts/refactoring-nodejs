@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Casos de refatoração de código baseado no livro Refactoring - Martin Fowler",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"

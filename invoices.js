@@ -1,4 +1,4 @@
-class Invoices {
+export default class Invoices {
     constructor(customer, performances) {
         this.customer = customer
         this.performances = performances
@@ -6,4 +6,3 @@ class Invoices {
     customer = () => { return this.customer }
     performances = () => { return this.performances }
 }
-module.exports = Invoices

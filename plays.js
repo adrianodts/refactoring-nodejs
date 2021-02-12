@@ -1,4 +1,4 @@
-class Plays {
+export default class Plays {
     constructor(playID, name, type) {
         this.playID = playID;
         this.name = name;
@@ -8,4 +8,3 @@ class Plays {
     name = () => { return this.name }
     type = () => { return this.type }
 }
-module.exports = Plays
